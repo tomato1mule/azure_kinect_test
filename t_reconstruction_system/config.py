@@ -109,7 +109,7 @@ class ConfigParser(configargparse.ArgParser):
 
         integration_parser = self.add_argument_group('integration')
         integration_parser.add(
-            '--integrate_color', action=argparse.BooleanOptionalAction,
+            '--integrate_color', action='store_true',
             default=True, help='Volumetric integration mode.')
         integration_parser.add(
             '--voxel_size', type=float,
