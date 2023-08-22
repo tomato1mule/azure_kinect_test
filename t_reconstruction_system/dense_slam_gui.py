@@ -56,35 +56,35 @@ class ReconstructionWindow:
         scale_label = gui.Label('Depth scale')
         self.scale_slider = gui.Slider(gui.Slider.INT)
         self.scale_slider.set_limits(1000, 5000)
-        self.scale_slider.int_value = int(config.depth_scale)
+        self.scale_slider.int_value = int(self.config.depth_scale)
         self.fixed_prop_grid.add_child(scale_label)
         self.fixed_prop_grid.add_child(self.scale_slider)
 
         voxel_size_label = gui.Label('Voxel size')
         self.voxel_size_slider = gui.Slider(gui.Slider.DOUBLE)
         self.voxel_size_slider.set_limits(0.003, 0.01)
-        self.voxel_size_slider.double_value = config.voxel_size
+        self.voxel_size_slider.double_value = self.config.voxel_size
         self.fixed_prop_grid.add_child(voxel_size_label)
         self.fixed_prop_grid.add_child(self.voxel_size_slider)
 
         trunc_multiplier_label = gui.Label('Trunc multiplier')
         self.trunc_multiplier_slider = gui.Slider(gui.Slider.DOUBLE)
         self.trunc_multiplier_slider.set_limits(1.0, 20.0)
-        self.trunc_multiplier_slider.double_value = config.trunc_voxel_multiplier
+        self.trunc_multiplier_slider.double_value = self.config.trunc_voxel_multiplier
         self.fixed_prop_grid.add_child(trunc_multiplier_label)
         self.fixed_prop_grid.add_child(self.trunc_multiplier_slider)
 
         est_block_count_label = gui.Label('Est. blocks')
         self.est_block_count_slider = gui.Slider(gui.Slider.INT)
         self.est_block_count_slider.set_limits(40000, 100000)
-        self.est_block_count_slider.int_value = config.block_count
+        self.est_block_count_slider.int_value = self.config.block_count
         self.fixed_prop_grid.add_child(est_block_count_label)
         self.fixed_prop_grid.add_child(self.est_block_count_slider)
 
         est_point_count_label = gui.Label('Est. points')
         self.est_point_count_slider = gui.Slider(gui.Slider.INT)
         self.est_point_count_slider.set_limits(500000, 8000000)
-        self.est_point_count_slider.int_value = config.est_point_count
+        self.est_point_count_slider.int_value = self.config.est_point_count
         self.fixed_prop_grid.add_child(est_point_count_label)
         self.fixed_prop_grid.add_child(self.est_point_count_slider)
 
@@ -104,7 +104,7 @@ class ReconstructionWindow:
         max_label = gui.Label('Depth max')
         self.max_slider = gui.Slider(gui.Slider.DOUBLE)
         self.max_slider.set_limits(3.0, 6.0)
-        self.max_slider.double_value = config.depth_max
+        self.max_slider.double_value = self.config.depth_max
         self.adjustable_prop_grid.add_child(max_label)
         self.adjustable_prop_grid.add_child(self.max_slider)
 
@@ -112,7 +112,7 @@ class ReconstructionWindow:
         diff_label = gui.Label('Depth diff')
         self.diff_slider = gui.Slider(gui.Slider.DOUBLE)
         self.diff_slider.set_limits(0.07, 0.5)
-        self.diff_slider.double_value = config.odometry_distance_thr
+        self.diff_slider.double_value = self.config.odometry_distance_thr
         self.adjustable_prop_grid.add_child(diff_label)
         self.adjustable_prop_grid.add_child(self.diff_slider)
 
@@ -256,17 +256,17 @@ class ReconstructionWindow:
         self.is_done = True
 
         if self.is_started:
-            print('Saving model to {}...'.format(config.path_npz))
-            self.model.voxel_grid.save(config.path_npz)
+            print('Saving model to {}...'.format(self.config.path_npz))
+            self.model.voxel_grid.save(self.config.path_npz)
             print('Finished.')
 
-            mesh_fname = '.'.join(config.path_npz.split('.')[:-1]) + '.ply'
+            mesh_fname = '.'.join(self.config.path_npz.split('.')[:-1]) + '.ply'
             print('Extracting and saving mesh to {}...'.format(mesh_fname))
             mesh = extract_trianglemesh(self.model.voxel_grid, config,
                                         mesh_fname)
             print('Finished.')
 
-            log_fname = '.'.join(config.path_npz.split('.')[:-1]) + '.log'
+            log_fname = '.'.join(self.config.path_npz.split('.')[:-1]) + '.log'
             print('Saving trajectory to {}...'.format(log_fname))
             save_poses(log_fname, self.poses)
             print('Finished.')
@@ -276,13 +276,13 @@ class ReconstructionWindow:
     def init_render(self, depth_ref, color_ref):
         self.input_depth_image.update_image(
             depth_ref.colorize_depth(float(self.scale_slider.int_value),
-                                     config.depth_min,
+                                     self.config.depth_min,
                                      self.max_slider.double_value).to_legacy())
         self.input_color_image.update_image(color_ref.to_legacy())
 
         self.raycast_depth_image.update_image(
             depth_ref.colorize_depth(float(self.scale_slider.int_value),
-                                     config.depth_min,
+                                     self.config.depth_min,
                                      self.max_slider.double_value).to_legacy())
         self.raycast_color_image.update_image(color_ref.to_legacy())
         self.window.set_needs_layout()
@@ -295,13 +295,13 @@ class ReconstructionWindow:
                       raycast_color, pcd, frustum):
         self.input_depth_image.update_image(
             input_depth.colorize_depth(
-                float(self.scale_slider.int_value), config.depth_min,
+                float(self.scale_slider.int_value), self.config.depth_min,
                 self.max_slider.double_value).to_legacy())
         self.input_color_image.update_image(input_color.to_legacy())
 
         self.raycast_depth_image.update_image(
             raycast_depth.colorize_depth(
-                float(self.scale_slider.int_value), config.depth_min,
+                float(self.scale_slider.int_value), self.config.depth_min,
                 self.max_slider.double_value).to_legacy())
         self.raycast_color_image.update_image(
             (raycast_color).to(o3c.uint8, False, 255.0).to_legacy())
@@ -324,7 +324,7 @@ class ReconstructionWindow:
         intrinsic = load_intrinsic(self.config)
 
         n_files = len(color_file_names)
-        device = o3d.core.Device(config.device)
+        device = o3d.core.Device(self.config.device)
 
         T_frame_to_model = o3c.Tensor(np.identity(4))
         depth_ref = o3d.t.io.read_image(depth_file_names[0])
@@ -378,7 +378,7 @@ class ReconstructionWindow:
                                  self.trunc_multiplier_slider.double_value)
             self.model.synthesize_model_frame(
                 raycast_frame, float(self.scale_slider.int_value),
-                config.depth_min, self.max_slider.double_value,
+                self.config.depth_min, self.max_slider.double_value,
                 self.trunc_multiplier_slider.double_value,
                 self.raycast_box.checked)
 
