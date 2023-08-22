@@ -1,0 +1,11 @@
+{
+    "python.defaultInterpreterPath": "~/anaconda3/envs/kinect/bin/python",
+    "python.pythonPath": "~/anaconda3/envs/kinect/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.autoComplete.extraPaths": [
+        "~/anaconda3/envs/kinect/lib/python3.8/site-packages/"
+    ],
+    "python.analysis.extraPaths": [
+        "~/anaconda3/envs/kinect/lib/python3.8/site-packages/"
+    ]
+}
