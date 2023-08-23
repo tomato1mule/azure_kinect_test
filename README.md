@@ -64,4 +64,5 @@ conda activate kinect
 mamba install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 -c pytorch
 pip3 install open3d==0.17.0
 pip install jupyter
+pip install pyk4a
 ```

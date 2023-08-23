@@ -1,5 +1,6 @@
 # Custom
 *.gzip
+recorded/
 
 
 # Byte-compiled / optimized / DLL files
